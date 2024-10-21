@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="@jayson • drug.lol" />
-    <meta property="og:description" content="i love money & and i love nikki" />
+    <meta property="og:title" content="@jayson" />
+    <meta property="og:description" content="the world is yours | i love nikki" />
     <meta property="og:image" content="https://cdn.discordapp.com/avatars/693658646634037299/efe4781b5048dda019f026c1b9d61953.webp?size=1024&format=webp&width=0&height=256" />
-    <meta property="og:url" content="https://drug.lol/@jayson" />
+    <meta property="og:url" content="https://jaysons.lol" />
     <meta property="theme-color" content="#1b1b1b">
     <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script>
     <script src="ref/js/sexymouse.js"></script>
@@ -16,6 +16,30 @@
     <title>@jayson</title>
     <link rel="stylesheet" href="ref/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        .static-text {
+            font-size: 1.5rem;
+            color: white;
+            margin-top: 20px;
+            height: 40px;
+            overflow: hidden;
+            border-right: 2px solid;
+            white-space: nowrap;
+            letter-spacing: 2px;
+            animation: blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: white }
+        }
+    </style>
 </head>
 
 <body>
@@ -39,7 +63,7 @@
                 <span class="tooltip">Certified</span>
             </div>
         </div>
-        <div class="static-text">i love nikki & she the love of my life</div>
+        <div class="static-text" id="dynamic-text"></div> 
         <div class="icon-wrapper">
             <a href="https://www.roblox.com/users/3290769146/profile" class="icon-button" target="_blank">
                 <i class="fas fa-globe"></i>
@@ -56,17 +80,53 @@
     <script>
         function playaudio() {
             var audio = new Audio('ref/misc/jayson.mp3');
+            audio.loop = true;
             audio.play();
             audio.volume = 0.3;
         }
-    </script>
 
-    <script>
         function removeOverlay() {
             var overlay = document.getElementById('overlay');
             overlay.style.display = 'none';
         }
+
+        const phrases = [
+            "i love nikki soo much",
+            "discord.gg/jayson thx",
+            "the world is yours"
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        const typingSpeed = 100;
+        const pauseBetweenPhrases = 2000; 
+        const dynamicTextElement = document.getElementById('dynamic-text');
+
+        function typePhrase() {
+            if (charIndex < phrases[phraseIndex].length) {
+                dynamicTextElement.textContent += phrases[phraseIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(typePhrase, typingSpeed);
+            } else {
+                setTimeout(erasePhrase, pauseBetweenPhrases);
+            }
+        }
+
+        function erasePhrase() {
+            if (charIndex > 0) {
+                dynamicTextElement.textContent = phrases[phraseIndex].substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(erasePhrase, typingSpeed / 2);
+            } else {
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                setTimeout(typePhrase, typingSpeed);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            typePhrase();
+        });
     </script>
+
 </body>
 
 </html>
