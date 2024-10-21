@@ -43,7 +43,7 @@
 </head>
 
 <body>
-    <div class="overlay" id="overlay">
+   <div class="overlay" id="overlay">
         <div class="proceed-button" onclick="removeOverlay(), playaudio()">Click to enter</div>
     </div>
 
@@ -86,8 +86,7 @@
         }
 
         function removeOverlay() {
-            var overlay = document.getElementById('overlay');
-            overlay.style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
         }
 
         const phrases = [
