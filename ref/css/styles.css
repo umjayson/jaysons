@@ -15,20 +15,21 @@ body {
     overflow: hidden;
 }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: url('https://cdn.discordapp.com/attachments/1084669195247169576/1298051845796659241/7950d961-cfb5-4c47-a721-801b0ddee064.gif') no-repeat center center fixed;
-            background-size: cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            font-family: Arial, sans-serif;
-        }
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: url('https://cdn.discordapp.com/attachments/1084669195247169576/1298051845796659241/7950d961-cfb5-4c47-a721-801b0ddee064.gif?ex=6718287c&is=6716d6fc&hm=2181114df0b4c79a68f3a21a0b3c919c80441b391aa1bccbf6648ecfda928a62&') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    font-family: Arial, sans-serif;
+    backdrop-filter: blur(5px); 
+}
 
 .proceed-button {
     background-color: transparent;
@@ -85,7 +86,7 @@ body {
     border: 2px solid rgba(255, 255, 255, 0.7);
     position: relative;
     z-index: 1;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); /* Glow effect */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7); 
 }
 
 .profile-decoration {
@@ -161,7 +162,7 @@ body {
 
 .static-text {
     position: absolute;
-    bottom: 50px;
+    bottom: 100px;
     color: white;
     font-size: 24px;
     font-family: Arial, sans-serif;
