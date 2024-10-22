@@ -42,9 +42,9 @@
     </style>
 </head>
 
-<body>
-   <div class="overlay" id="overlay">
-        <div class="proceed-button" onclick="removeOverlay(), body.classList.remove('blurred'), playaudio()">Click to enter</div>
+<body class="blurred">
+    <div class="overlay" id="overlay">
+        <div class="proceed-button" onclick="removeOverlay(), playaudio()">Click to enter</div>
     </div>
 
     <div class="blurred-box">
@@ -87,6 +87,7 @@
 
         function removeOverlay() {
             document.getElementById('overlay').style.display = 'none';
+            document.body.classList.remove('blurred');
         }
 
         const phrases = [
@@ -97,7 +98,7 @@
         let phraseIndex = 0;
         let charIndex = 0;
         const typingSpeed = 100;
-        const pauseBetweenPhrases = 2000; 
+        const pauseBetweenPhrases = 2000;
         const dynamicTextElement = document.getElementById('dynamic-text');
 
         function typePhrase() {
@@ -121,7 +122,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             typePhrase();
         });
     </script>
