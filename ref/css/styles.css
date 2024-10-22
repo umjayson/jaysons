@@ -3,6 +3,11 @@
     transition: filter 1s ease; 
 }
 
+#overlay {
+    opacity: 1;
+    transition: opacity 1s ease; 
+}
+
 * {cursor: url(https://cur.cursors-4u.net/others/oth-2/oth160.cur), auto !important;}
 
 body {
