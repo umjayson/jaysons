@@ -44,10 +44,10 @@
 
 <body class="blurred">
     <div class="overlay" id="overlay">
-        <div class="proceed-button" onclick="fadeOutOverlay(), playaudio()">Click to enter</div>
+        <div class="proceed-button" onclick="removeOverlay(), playaudio()">Click to enter</div>
     </div>
 
-    <div class="blurred-box" id="content-container" style="display: none;">
+    <div class="blurred-box">
         <div class="profile-wrapper">
             <div class="profile-decoration"></div>
             <div class="profile-picture"></div>
@@ -85,20 +85,9 @@
             audio.volume = 0.3;
         }
 
-        function fadeOutOverlay() {
-            const overlay = document.getElementById('overlay');
-            overlay.style.transition = 'opacity 1s ease';
-            document.body.style.transition = 'filter 1s ease'; /
-
-            overlay.style.opacity = '0'; 
-            document.body.style.filter = 'none';  
-
-            setTimeout(() => {
-                overlay.style.display = 'none';  
-                document.body.classList.remove('blurred');  
-
-                document.getElementById('content-container').style.display = 'flex';
-            }, 1000); 
+        function removeOverlay() {
+            document.getElementById('overlay').style.display = 'none';
+            document.body.classList.remove('blurred');  // Removes the blur class from the body
         }
 
         const phrases = [
