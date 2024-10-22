@@ -15,6 +15,11 @@ body {
     overflow: hidden;
 }
 
+        .blurred .background {
+            filter: blur(8px);
+            transition: filter 1s ease; 
+        }
+
 .overlay {
     position: fixed;
     top: 0;
