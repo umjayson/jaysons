@@ -123,14 +123,12 @@ body {
 
 .profileBio {
     position: absolute;
-    bottom: 115px; 
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 115px;
     color: white;
     font-size: 24px;
     font-family: Arial, sans-serif;
-    text-align: center;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    text-align: center; 
+    text-shadow: 0 0 10px rgba(255, 255, 255);
 }
 
 .showcase {
