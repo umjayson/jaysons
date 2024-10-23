@@ -1,4 +1,4 @@
-const texts = document.getElementById('typingTexts').innerHTML.split(' &lt;&gt; ');
+const texts = document.getElementById('typingTexts').textContent.split(' | ');
 const textElement = document.getElementById('typingText');
 let currentTextIndex = 0;
 
@@ -17,11 +17,10 @@ function typeWriter(text, i) {
 }
 
 function eraseText(text) {
-    let length = text.length;
-    if (length > 0) {
-        textElement.textContent = text.substring(0, length - 1);
+    if (text.length > 0) {
+        textElement.textContent = text.substring(0, text.length - 1);
         setTimeout(function() {
-            eraseText(text.substring(0, length - 1));
+            eraseText(text.substring(0, text.length - 1));
         }, 50);
     } else {
         currentTextIndex = (currentTextIndex + 1) % texts.length;
@@ -31,4 +30,6 @@ function eraseText(text) {
     }
 }
 
-typeWriter(texts[currentTextIndex], 0);
+document.addEventListener('DOMContentLoaded', function() {
+    typeWriter(texts[currentTextIndex], 0);
+});
