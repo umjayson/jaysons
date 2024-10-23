@@ -55,6 +55,11 @@
     </div>
     
     <div class="blurred-box">
+        <h3 id="typingText" class="profileBio"></h3>
+        <i>
+            <div id="typingTexts" style="display: none;">i love nikki soo much | discord.gg/jayson thx | the world is yours</div>
+        </i>
+        
         <div class="profile-wrapper">
             <div class="profile-decoration"></div>
             <div class="profile-picture"></div>
@@ -83,7 +88,8 @@
             </a>
         </div>
     </div>
-
+    <script src="ref/js/typing.js"></script>
+    
     <script>
         function playaudio() {
             var audio = new Audio('ref/misc/jayson.mp3');
@@ -103,36 +109,6 @@
             "discord.gg/jayson thx",
             "the world is yours"
         ];
-        let phraseIndex = 0;
-        let charIndex = 0;
-        const typingSpeed = 100;
-        const pauseBetweenPhrases = 2000;
-        const dynamicTextElement = document.getElementById('dynamic-text');
-
-        function typePhrase() {
-            if (charIndex < phrases[phraseIndex].length) {
-                dynamicTextElement.textContent += phrases[phraseIndex].charAt(charIndex);
-                charIndex++;
-                setTimeout(typePhrase, typingSpeed);
-            } else {
-                setTimeout(erasePhrase, pauseBetweenPhrases);
-            }
-        }
-
-        function erasePhrase() {
-            if (charIndex > 0) {
-                dynamicTextElement.textContent = phrases[phraseIndex].substring(0, charIndex - 1);
-                charIndex--;
-                setTimeout(erasePhrase, typingSpeed / 2);
-            } else {
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-                setTimeout(typePhrase, typingSpeed);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            typePhrase();
-        });
     </script>
 
 </body>
