@@ -121,6 +121,15 @@ body {
                  0 0 20px rgba(255, 255, 255, 0.6);
 }
 
+.profileBio {
+    color: white;
+    font-size: 24px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    margin-top: 20px;
+}
+
 .showcase {
     width: 75px;
     height: 30px;
@@ -164,16 +173,6 @@ body {
 .badge:hover .tooltip {
     visibility: visible;
     opacity: 1;
-}
-
-.static-text {
-    position: absolute;
-   bottom: 115px;
-    color: white;
-    font-size: 24px;
-    font-family: Arial, sans-serif;
-    text-align: center; 
-    text-shadow: 0 0 10px rgba(255, 255, 255);
 }
 
 .icon-wrapper {
