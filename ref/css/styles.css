@@ -6,7 +6,7 @@
 * {cursor: url(https://cur.cursors-4u.net/others/oth-2/oth160.cur), auto !important;}
 
 body {
-    background: url('https://cdn.discordapp.com/attachments/1084669195247169576/1298051845796659241/7950d961-cfb5-4c47-a721-801b0ddee064.gif?ex=6718287c&is=6716d6fc&hm=2181114df0b4c79a68f3a21a0b3c919c80441b391aa1bccbf6648ecfda928a62&') no-repeat center center fixed;
+    background: url('ref/misc/backgroundgif.gif') no-repeat center center fixed;
     background-size: cover;
     margin: 0;
     padding: 0;
