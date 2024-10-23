@@ -39,6 +39,10 @@
             from, to { border-color: transparent }
             50% { border-color: white }
         }
+
+        .blurred-box {
+            display: none;
+        }
     </style>
 </head>
 
@@ -89,7 +93,8 @@
 
         function removeOverlay() {
             document.getElementById('overlay').style.display = 'none';
-            document.body.classList.remove('blurred');  // Removes the blur class from the body
+            document.body.classList.remove('blurred');
+            document.querySelector('.blurred-box').style.display = 'flex'; 
         }
 
         const phrases = [
