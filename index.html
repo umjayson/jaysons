@@ -49,10 +49,10 @@
 <body class="blurred">
     <div class="background" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url('https://cdn.discordapp.com/attachments/1084669195247169576/1298051845796659241/7950d961-cfb5-4c47-a721-801b0ddee064.gif?ex=6718287c&is=6716d6fc&hm=2181114df0b4c79a68f3a21a0b3c919c80441b391aa1bccbf6648ecfda928a62&'); background-size: cover; background-position: center;"></div>
     
-<div class="overlay" id="overlay" onclick="removeOverlay(), playaudio()">
-    <div class="proceed-button">Click to enter</div>
-</div
-
+   <div class="overlay" id="overlay" onclick="removeOverlay(), playaudio()">
+        <div class="proceed-button">Click to enter</div>
+    </div>
+    
     <div class="blurred-box">
         <div class="profile-wrapper">
             <div class="profile-decoration"></div>
@@ -93,10 +93,10 @@
 
         function removeOverlay() {
             document.getElementById('overlay').style.display = 'none';
-            document.body.classList.remove('blurred');
-            document.querySelector('.blurred-box').style.display = 'flex'; 
+            document.body.classList.remove('blurred');  
+            document.querySelector('.blurred-box').style.display = 'flex';
         }
-
+        
         const phrases = [
             "i love nikki soo much",
             "discord.gg/jayson thx",
