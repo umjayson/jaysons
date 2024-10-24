@@ -121,7 +121,7 @@
 
     <script>
         function playaudio() {
-            var audio = new Audio('ref/misc/jayson.mp3');
+            var audio = new Audio('ref/misc/musicplaying.mp3');
             audio.loop = true;
             audio.play();
             audio.volume = 0.3;
@@ -133,15 +133,13 @@
             const blurredBox = document.querySelector('.blurred-box');
             const proceedButton = document.getElementById('proceedButton');
 
-            // Apply fade-out effect to the "Click to enter" text and background blur
             proceedButton.classList.add('hide-proceed');
             background.classList.add('unblurred');
 
-            // Wait for the "Click to enter" to fade out before hiding overlay and showing content
             setTimeout(() => {
                 overlay.classList.add('fade-out');
                 blurredBox.classList.add('fade-in');
-            }, 1000); // Adjust the timing based on how long you want the fade to take
+            }, 1000); 
         }
         
         const phrases = [
