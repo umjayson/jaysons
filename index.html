@@ -120,13 +120,15 @@
             const overlay = document.getElementById('overlay');
             const background = document.querySelector('.background');
             const blurredBox = document.querySelector('.blurred-box');
+            const dynamicText = document.getElementById('dynamic-text');
 
             overlay.classList.add('fade-out');
             background.classList.add('unblurred');
+            dynamicText.classList.add('fade-out');
             
             setTimeout(() => {
                 blurredBox.classList.add('fade-in');
-            }, 1000); // Delay to allow blur and overlay to fade out first
+            }, 1000); // Delay to allow blur, overlay, and text to fade out first
         }
         
         const phrases = [
