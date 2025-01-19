@@ -9,197 +9,132 @@
     <meta property="og:image" content="https://jaysons.lol/ref/misc/batman.png" />
     <meta property="og:url" content="https://jaysons.lol" />
     <meta property="theme-color" content="#1b1b1b">
-    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script>
-    <script src="ref/js/sexymouse.js"></script>
-    <script src="ref/js/bettersnow.js"></script>
-    <script src="ref/js/ZOOOOOOOOM.js"></script>
     <title>@jayson</title>
-    <link rel="icon" href="/ref/misc/batmanimage.png" type="image/x-icon">
     <link rel="stylesheet" href="ref/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        .static-text {
+        .volume-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .volume-button {
             font-size: 1.5rem;
+            cursor: pointer;
             color: white;
-            bottom: 115px;
-            margin-top: 25px;
-            height: 40px;
-            overflow: hidden;
-            border-right: 2px solid;
-            white-space: nowrap;
-            letter-spacing: 2px;
-            animation: blink-caret 0.75s step-end infinite;
-            opacity: 1;
-            transition: opacity 1s ease;
         }
 
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        .volume-slider {
+            display: none;
+            width: 150px;
+            background: #333;
+            border-radius: 5px;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: white }
+        .volume-slider input[type="range"] {
+            width: 100%;
+            background: #555;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
         }
 
-        .blurred-box {
-            opacity: 0;
-            transition: opacity 1.5s ease;
+        .volume-slider input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            background: white;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            cursor: pointer;
         }
 
-        .fade-in {
-            opacity: 1;
-        }
-
-        #overlay {
-            opacity: 1;
-            transition: opacity 1s ease;
-        }
-
-        .fade-out {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .background {
-            filter: blur(8px);
-            transition: filter 1.5s ease;
-        }
-
-        .unblurred {
-            filter: blur(0);
-        }
-
-        .proceed-button {
-            opacity: 1;
-            transition: opacity 1s ease;
-            pointer-events: auto;
-        }
-
-        .hide-proceed {
-            opacity: 0;
-            pointer-events: none;
+        .volume-control:hover .volume-slider {
+            display: block;
         }
     </style>
 </head>
 
-<body class="blurred">
-    <div class="background" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url('ref/misc/backgroundgif.gif'); background-size: cover; background-position: center;"></div>
-    
-   <div class="overlay" id="overlay" onclick="handleEnter()">
+<body>
+    <div class="overlay" id="overlay" onclick="handleEnter()">
         <div class="proceed-button" id="proceedButton">click</div>
     </div>
-    
-    <div class="blurred-box">
-        <div class="profile-wrapper">
-            <div class="profile-decoration"></div>
-            <div class="profile-picture"></div>
-        </div>
-        <div class="profile-name">jayson</div>
-        <div class="showcase">
-            <div class="badge">
-                <i class="fas fa-gun"></i>
-                <span class="tooltip">Thug</span>
-            </div>
-            <div class="badge">
-                <i class="fa-solid fa-star" style="color: white;"></i>
-                <span class="tooltip">Certified</span>
-            </div>
-        </div>
-        <div class="static-text" id="dynamic-text"></div>
-        <div class="icon-wrapper">
-            <a href="https://www.instagram.com/jaysons.lol" class="icon-button" target="_blank">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.roblox.com/users/3290769146/profile" class="icon-button" target="_blank">
-                <i class="fas fa-globe"></i>
-            </a>
-            <a href="https://discord.gg/stupid" class="icon-button" target="_blank">
-                <i class="fab fa-discord"></i>
-            </a>
-            <a href="https://www.tiktok.com/@umjayson" class="icon-button" target="_blank">
-                <i class="fab fa-tiktok"></i>
-            </a>
+
+    <div class="volume-control">
+        <i class="fas fa-volume-up volume-button" id="volumeButton"></i>
+        <div class="volume-slider">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
         </div>
     </div>
 
     <script>
         let hasClicked = false;
+        let isMuted = false;
+        let audio1, audio2;
 
         function handleEnter() {
             if (hasClicked) return;
             hasClicked = true;
 
             const overlay = document.getElementById('overlay');
-            const background = document.querySelector('.background');
-            const blurredBox = document.querySelector('.blurred-box');
             const proceedButton = document.getElementById('proceedButton');
 
             proceedButton.classList.add('hide-proceed');
-            background.classList.add('unblurred');
-
             setTimeout(() => {
-                overlay.classList.add('fade-out');
-                blurredBox.classList.add('fade-in');
+                overlay.style.display = 'none';
             }, 1000);
 
             playAudioSequence();
         }
 
         function playAudioSequence() {
-            const audio1 = new Audio('ref/misc/audio1.mp3');
-            const audio2 = new Audio('ref/misc/audio2.mp3');
+            audio1 = new Audio('ref/misc/audio1.mp3');
+            audio2 = new Audio('ref/misc/audio2.mp3');
 
-            audio1.volume = 0.3;
-            audio2.volume = 0.3;
+            audio1.volume = 0.5;
+            audio2.volume = 0.5;
             audio2.loop = true;
 
             audio1.play();
-
             audio1.addEventListener('ended', () => {
                 audio2.play();
             });
         }
 
-        const phrases = [
-            "follow my instagram & roblox",
-            "discord.gg/jayson",
-            "the world is yours"
-        ];
-        let phraseIndex = 0;
-        let charIndex = 0;
-        const typingSpeed = 100;
-        const pauseBetweenPhrases = 2000;
-        const dynamicTextElement = document.getElementById('dynamic-text');
-        
-        function typePhrase() {
-            if (charIndex < phrases[phraseIndex].length) {
-                dynamicTextElement.textContent += phrases[phraseIndex].charAt(charIndex);
-                charIndex++;
-                setTimeout(typePhrase, typingSpeed);
-            } else {
-                setTimeout(erasePhrase, pauseBetweenPhrases);
-            }
-        }
-        
-        function erasePhrase() {
-            if (charIndex > 0) {
-                dynamicTextElement.textContent = phrases[phraseIndex].substring(0, charIndex - 1);
-                charIndex--;
-                setTimeout(erasePhrase, typingSpeed / 2);
-            } else {
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-                setTimeout(typePhrase, typingSpeed);
-            }
-        }
+        const volumeButton = document.getElementById('volumeButton');
+        const volumeSlider = document.getElementById('volumeSlider');
 
-        document.addEventListener('DOMContentLoaded', function () {
-            typePhrase();
+        volumeButton.addEventListener('click', () => {
+            isMuted = !isMuted;
+            updateVolumeState();
         });
-    </script>
 
+        volumeSlider.addEventListener('input', (e) => {
+            const volume = parseFloat(e.target.value);
+            audio1.volume = volume;
+            audio2.volume = volume;
+        });
+
+        function updateVolumeState() {
+            if (isMuted) {
+                audio1.volume = 0;
+                audio2.volume = 0;
+                volumeButton.classList.replace('fa-volume-up', 'fa-volume-mute');
+            } else {
+                const volume = parseFloat(volumeSlider.value);
+                audio1.volume = volume;
+                audio2.volume = volume;
+                volumeButton.classList.replace('fa-volume-mute', 'fa-volume-up');
+            }
+        }
+    </script>
 </body>
 
 </html>
