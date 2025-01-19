@@ -217,7 +217,6 @@
             });
         }
 
-        // Volume Controls
         const volumeButton = document.getElementById('volumeButton');
         const volumeSlider = document.getElementById('volumeSlider');
 
@@ -246,6 +245,42 @@
                 volumeButton.classList.replace('fa-volume-mute', 'fa-volume-up');
             }
         }
+
+       const phrases = [
+            "follow my instagram & roblox",
+            "discord.gg/jayson",
+            "the world is yours"
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        const typingSpeed = 100;
+        const pauseBetweenPhrases = 2000;
+        const dynamicTextElement = document.getElementById('dynamic-text');
+        
+        function typePhrase() {
+            if (charIndex < phrases[phraseIndex].length) {
+                dynamicTextElement.textContent += phrases[phraseIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(typePhrase, typingSpeed);
+            } else {
+                setTimeout(erasePhrase, pauseBetweenPhrases);
+            }
+        }
+        
+        function erasePhrase() {
+            if (charIndex > 0) {
+                dynamicTextElement.textContent = phrases[phraseIndex].substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(erasePhrase, typingSpeed / 2);
+            } else {
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                setTimeout(typePhrase, typingSpeed);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            typePhrase();
+        });
     </script>
 </body>
 
