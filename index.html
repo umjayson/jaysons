@@ -75,10 +75,12 @@
         .proceed-button {
             opacity: 1;
             transition: opacity 1s ease;
+            pointer-events: auto;
         }
 
         .hide-proceed {
             opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -86,7 +88,7 @@
 <body class="blurred">
     <div class="background" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url('ref/misc/backgroundgif.gif'); background-size: cover; background-position: center;"></div>
     
-   <div class="overlay" id="overlay" onclick="removeOverlay(), playaudio()">
+   <div class="overlay" id="overlay" onclick="handleEnter()">
         <div class="proceed-button" id="proceedButton">click</div>
     </div>
     
@@ -124,14 +126,12 @@
     </div>
 
     <script>
-        function playaudio() {
-            var audio = new Audio('ref/misc/musicplaying.mp3');
-            audio.loop = true;
-            audio.play();
-            audio.volume = 0.3;
-        }
+        let hasClicked = false;
 
-        function removeOverlay() {
+        function handleEnter() {
+            if (hasClicked) return;
+            hasClicked = true;
+
             const overlay = document.getElementById('overlay');
             const background = document.querySelector('.background');
             const blurredBox = document.querySelector('.blurred-box');
@@ -143,9 +143,26 @@
             setTimeout(() => {
                 overlay.classList.add('fade-out');
                 blurredBox.classList.add('fade-in');
-            }, 1000); 
+            }, 1000);
+
+            playAudioSequence();
         }
-        
+
+        function playAudioSequence() {
+            const audio1 = new Audio('ref/misc/audio1.mp3');
+            const audio2 = new Audio('ref/misc/audio2.mp3');
+
+            audio1.volume = 0.3;
+            audio2.volume = 0.3;
+            audio2.loop = true;
+
+            audio1.play();
+
+            audio1.addEventListener('ended', () => {
+                audio2.play();
+            });
+        }
+
         const phrases = [
             "follow my instagram & roblox",
             "discord.gg/jayson",
