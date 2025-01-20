@@ -84,73 +84,69 @@
       50%      { border-color: white; }
     }
 
-    /* Volume control container
-       - starts as a small square (40x40) with icon centered
-       - expands in width on hover to show slider on the right */
+    /* Volume control container:
+       - pinned top-left
+       - starts at width: 40px (only icon visible)
+       - expands to width: 140px on hover for the slider to appear
+     */
     .volume-control-blurred {
       position: fixed;
       top: 20px;
       left: 20px;
       z-index: 100;
 
-      width: 40px;      /* initial width to just show icon */
-      height: 40px;     /* fixed height */
-      overflow: hidden; /* hide slider when collapsed */
+      width: 40px;
+      height: 40px;
+      display: none; /* shown after "click to enter" */
 
-      display: none;    /* shown after "click to enter" */
       background: rgba(255, 255, 255, 0.075);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0);
 
-      transition:
-        width 0.3s ease,
-        height 0.3s ease;
+      /* Use flex so the icon & slider can align horizontally */
+      display: flex;
+      align-items: center;
+      justify-content: flex-start; /* icon stays left */
+
+      transition: width 0.3s ease;
+      overflow: hidden; /* hide the slider when collapsed */
     }
-    /* Expand to the right on hover */
     .volume-control-blurred:hover {
-      width: 160px; /* expand enough to reveal the slider on the right */
+      width: 140px;
     }
 
-    /* Center the volume icon absolutely in the 40x40 box */
-    .volume-button {
-      position: absolute;
+    /* Icon container (40x40) so it doesn't move */
+    .icon-container {
       width: 40px;
       height: 40px;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      margin: auto;   /* centers icon horizontally & vertically */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .volume-button {
       font-size: 1.2rem;
       color: white;
-      text-align: center;
-      line-height: 40px;
       cursor: pointer;
     }
 
-    /* Slider on the right side, hidden until container expands */
-    .volume-slider {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      margin: auto 0;    /* center vertically */
-      right: 10px;       /* keep some space from the right edge */
-      width: 0;          /* collapsed by default */
-      opacity: 0;
+    /* Slider container: collapsed by default, expands on hover */
+    .slider-container {
+      width: 0;
       transition: width 0.3s ease, opacity 0.3s ease;
-      display: flex;
+      opacity: 0;
+      display: flex; /* horizontal layout for the slider */
       align-items: center;
+      margin-left: 5px; /* small space from the icon container */
     }
-    /* When hovered (container is bigger), show the slider */
-    .volume-control-blurred:hover .volume-slider {
-      width: 90px;
+    .volume-control-blurred:hover .slider-container {
+      width: 80px; /* expand for the slider range */
       opacity: 1;
     }
 
-    /* Slider styling: white track + white dot */
-    .volume-slider input[type="range"] {
+    /* Actual slider styling: white track + white thumb (dot) */
+    .volume-slider {
       width: 100%;
       appearance: none;
       outline: none;
@@ -158,18 +154,18 @@
       background: transparent;
     }
     /* White track */
-    .volume-slider input[type="range"]::-webkit-slider-runnable-track {
+    .volume-slider::-webkit-slider-runnable-track {
       height: 3px;
       background: white;
       border-radius: 2px;
     }
-    .volume-slider input[type="range"]::-moz-range-track {
+    .volume-slider::-moz-range-track {
       height: 3px;
       background: white;
       border-radius: 2px;
     }
     /* White thumb (dot) */
-    .volume-slider input[type="range"]::-webkit-slider-thumb {
+    .volume-slider::-webkit-slider-thumb {
       appearance: none;
       background: white;
       border-radius: 50%;
@@ -178,7 +174,7 @@
       margin-top: -5px; /* center thumb vertically on track */
       cursor: pointer;
     }
-    .volume-slider input[type="range"]::-moz-range-thumb {
+    .volume-slider::-moz-range-thumb {
       background: white;
       border-radius: 50%;
       width: 12px;
@@ -258,12 +254,15 @@
 
   <!-- Volume Control Blurred Box (initially hidden) -->
   <div class="volume-control-blurred" id="volumeControl">
-    <i class="fas fa-volume-up volume-button" id="volumeButton"></i>
-    <div class="volume-slider">
+    <div class="icon-container">
+      <i class="fas fa-volume-up volume-button" id="volumeButton"></i>
+    </div>
+    <div class="slider-container">
       <!-- Max volume is 0.5 -->
       <input
         type="range"
         id="volumeSlider"
+        class="volume-slider"
         min="0"
         max="0.5"
         step="0.01"
@@ -274,7 +273,13 @@
 
   <script>
     let hasClicked = false;
+
+    // For toggling the volume button
     let isMuted = false;
+
+    // We remember the last non-zero volume to allow quick toggle back
+    let lastVolume = 0.5;
+
     let audio1, audio2;
 
     function handleEnter() {
@@ -296,7 +301,7 @@
         overlay.classList.add('fade-out');
         blurredBox.classList.add('fade-in');
         // Show volume control after they enter
-        volumeControl.style.display = 'block';
+        volumeControl.style.display = 'flex';
       }, 1000);
 
       playAudioSequence();
@@ -322,30 +327,43 @@
     const volumeSlider = document.getElementById('volumeSlider');
 
     volumeButton.addEventListener('click', () => {
-      isMuted = !isMuted;
-      updateVolumeState();
+      // Toggle muted state
+      if (!isMuted) {
+        // We're muting, so remember the last volume and set slider to 0
+        lastVolume = parseFloat(volumeSlider.value);
+        volumeSlider.value = 0;
+        audio1.volume = 0;
+        audio2.volume = 0;
+        isMuted = true;
+        volumeButton.classList.replace('fa-volume-up', 'fa-volume-mute');
+      } else {
+        // We're unmuting, restore lastVolume
+        volumeSlider.value = lastVolume.toString();
+        audio1.volume = lastVolume;
+        audio2.volume = lastVolume;
+        isMuted = false;
+        volumeButton.classList.replace('fa-volume-mute', 'fa-volume-up');
+      }
     });
 
     volumeSlider.addEventListener('input', (e) => {
       const volume = parseFloat(e.target.value);
-      if (!isMuted) {
-        audio1.volume = volume;
-        audio2.volume = volume;
-      }
-    });
 
-    function updateVolumeState() {
-      if (isMuted) {
+      // If the user is dragging to 0, we become muted
+      if (volume === 0) {
+        isMuted = true;
+        volumeButton.classList.replace('fa-volume-up', 'fa-volume-mute');
         audio1.volume = 0;
         audio2.volume = 0;
-        volumeButton.classList.replace('fa-volume-up', 'fa-volume-mute');
       } else {
-        const volume = parseFloat(volumeSlider.value);
+        // Unmute automatically if volume > 0
+        isMuted = false;
+        volumeButton.classList.replace('fa-volume-mute', 'fa-volume-up');
         audio1.volume = volume;
         audio2.volume = volume;
-        volumeButton.classList.replace('fa-volume-mute', 'fa-volume-up');
+        lastVolume = volume; // update lastVolume
       }
-    }
+    });
 
     // Typing Text
     const phrases = [
