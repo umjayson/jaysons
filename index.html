@@ -84,14 +84,17 @@
       50%      { border-color: white; }
     }
 
-    /* Single container: volume button + slider (hidden until user clicks) */
+    /* Volume control container (single container):
+       - Start at 40×40, icon doesn't move
+       - Expand to the right on hover to show slider
+    */
     .volume-control-blurred {
       position: fixed;
       top: 20px;
       left: 20px;
       z-index: 100;
 
-      /* Initially 40×40 to show only the icon in the center */
+      /* Initially show only the 40×40 icon area */
       width: 40px;
       height: 40px;
       display: none; /* hidden until "click to enter" */
@@ -103,38 +106,43 @@
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0);
 
-      /* Overflow hidden so the slider can't appear outside until hovered */
+      /* Keep any child content hidden if outside 40×40 */
       overflow: hidden;
       transition: width 0.3s ease;
     }
-
-    /* Expand to make room for the slider on hover */
+    /* On hover, expand width to reveal the slider on the right side */
     .volume-control-blurred:hover {
-      width: 140px; /* enough space to reveal the slider to the right */
+      width: 140px; /* adjust as needed */
     }
 
-    /* Center the volume icon in the 40×40 box */
+    /* Icon wrapper (40×40), pinned to the left side */
+    .icon-wrap {
+      position: absolute;
+      top: 0; left: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .volume-button {
-      position: absolute; 
-      top: 0; left: 0; right: 0; bottom: 0;
-      margin: auto; /* center horizontally & vertically */
       font-size: 1.2rem;
       color: white;
       cursor: pointer;
       text-align: center;
-      line-height: 40px; /* vertically center text inside the 40px area */
+      line-height: 40px;
     }
 
-    /* The slider is placed to the right, hidden until container expands */
+    /* Slider is placed to the right, hidden (collapsed) by default */
     .volume-slider {
       position: absolute;
-      left: 50px;   /* offset from the left so icon doesn't overlap it */
       top: 0;
       bottom: 0;
-      margin: auto 0; /* center vertically within the container's height */
+      margin: auto 0;  /* center vertically */
+      left: 50px;      /* place it to the right of the icon area */
       width: 80px;
 
-      /* Start invisible and non-interactive */
       opacity: 0;
       transform: scaleX(0);
       transform-origin: left center;
@@ -142,7 +150,8 @@
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
-    /* On hover, the container grows, so we show the slider */
+    /* When the container is hovered, the container expands,
+       so we reveal the slider by scaling up & setting opacity */
     .volume-control-blurred:hover .volume-slider {
       transform: scaleX(1);
       opacity: 1;
@@ -253,12 +262,14 @@
     </div>
   </div>
 
-  <!-- Volume Control (hidden until they enter) -->
+  <!-- Volume Control (hidden until user clicks) -->
   <div class="volume-control-blurred" id="volumeControl">
-    <!-- Icon in the center of the initial 40×40 box -->
-    <i class="fas fa-volume-up volume-button" id="volumeButton"></i>
+    <!-- Icon stays fixed in its own 40×40 area so it won't move on hover -->
+    <div class="icon-wrap">
+      <i class="fas fa-volume-up volume-button" id="volumeButton"></i>
+    </div>
 
-    <!-- Slider extends on hover -->
+    <!-- Slider extends on hover, from the same container -->
     <input
       type="range"
       id="volumeSlider"
@@ -323,7 +334,6 @@
     const volumeSlider = document.getElementById('volumeSlider');
 
     volumeButton.addEventListener('click', () => {
-      // Toggle muted state
       if (!isMuted) {
         // Mute: remember lastVolume, set slider to 0
         lastVolume = parseFloat(volumeSlider.value);
