@@ -21,7 +21,6 @@
   />
 
   <style>
-    /* Main blurred-box for content */
     .blurred-box {
       opacity: 0;
       transition: opacity 1.5s ease;
@@ -30,7 +29,6 @@
       opacity: 1;
     }
 
-    /* Overlay & transitions */
     #overlay {
       opacity: 1;
       transition: opacity 1s ease;
@@ -40,7 +38,6 @@
       visibility: hidden;
     }
 
-    /* Background blur */
     .background {
       filter: blur(8px);
       transition: filter 1.5s ease;
@@ -49,7 +46,6 @@
       filter: blur(0);
     }
 
-    /* "click to enter" button */
     .proceed-button {
       opacity: 1;
       transition: opacity 1s ease;
@@ -60,7 +56,6 @@
       pointer-events: none;
     }
 
-    /* Typing text */
     .static-text {
       font-size: 1.5rem;
       color: white;
@@ -84,38 +79,30 @@
       50%      { border-color: white; }
     }
 
-    /* Volume control container (single container):
-       - Start at 40×40, icon doesn't move
-       - Expand to the right on hover to show slider
-    */
     .volume-control-blurred {
       position: fixed;
       top: 20px;
       left: 20px;
       z-index: 100;
 
-      /* Initially show only the 40×40 icon area */
       width: 40px;
       height: 40px;
-      display: none; /* hidden until "click to enter" */
+      display: none; 
 
-      /* Blurred background styling */
       background: rgba(255, 255, 255, 0.075);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0);
 
-      /* Keep any child content hidden if outside 40×40 */
       overflow: hidden;
       transition: width 0.3s ease;
     }
-    /* On hover, expand width to reveal the slider on the right side */
+
     .volume-control-blurred:hover {
-      width: 140px; /* adjust as needed */
+      width: 140px; 
     }
 
-    /* Icon wrapper (40×40), pinned to the left side */
     .icon-wrap {
       position: absolute;
       top: 0; left: 0;
@@ -134,13 +121,12 @@
       line-height: 40px;
     }
 
-    /* Slider is placed to the right, hidden (collapsed) by default */
     .volume-slider {
       position: absolute;
       top: 0;
       bottom: 0;
-      margin: auto 0;  /* center vertically */
-      left: 50px;      /* place it to the right of the icon area */
+      margin: auto 0;  
+      left: 50px;     
       width: 80px;
 
       opacity: 0;
@@ -150,15 +136,12 @@
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
-    /* When the container is hovered, the container expands,
-       so we reveal the slider by scaling up & setting opacity */
     .volume-control-blurred:hover .volume-slider {
       transform: scaleX(1);
       opacity: 1;
       pointer-events: auto;
     }
 
-    /* Slider styling: white track + white thumb (dot) */
     .volume-slider::-webkit-slider-runnable-track {
       height: 3px;
       background: white;
@@ -175,7 +158,7 @@
       border-radius: 50%;
       width: 12px;
       height: 12px;
-      margin-top: -5px; /* center thumb vertically on track */
+      margin-top: -5px; 
       cursor: pointer;
     }
     .volume-slider::-moz-range-thumb {
@@ -195,7 +178,6 @@
 </head>
 
 <body class="blurred">
-  <!-- Background Image -->
   <div
     class="background"
     style="
@@ -207,12 +189,10 @@
     "
   ></div>
 
-  <!-- Overlay with "Click to Enter" -->
   <div class="overlay" id="overlay" onclick="handleEnter()">
     <div class="proceed-button" id="proceedButton">click</div>
   </div>
   
-  <!-- Main Blurred Box with Profile Content -->
   <div class="blurred-box">
     <div class="profile-wrapper">
       <div class="profile-decoration"></div>
@@ -221,8 +201,12 @@
     <div class="profile-name">jayson</div>
     <div class="showcase">
       <div class="badge">
-        <i class="fas fa-gun"></i>
-        <span class="tooltip">Thug</span>
+        <i class="fa-solid fa-car"></i>
+        <span class="tooltip">C8Corvette</span>
+      </div>
+      <div class="badge">
+        <i class="fa-solid fa-money-bill"></i>
+        <span class="tooltip">Rich</span>
       </div>
       <div class="badge">
         <i class="fa-solid fa-star" style="color: white;"></i>
@@ -262,14 +246,11 @@
     </div>
   </div>
 
-  <!-- Volume Control (hidden until user clicks) -->
   <div class="volume-control-blurred" id="volumeControl">
-    <!-- Icon stays fixed in its own 40×40 area so it won't move on hover -->
     <div class="icon-wrap">
       <i class="fas fa-volume-up volume-button" id="volumeButton"></i>
     </div>
 
-    <!-- Slider extends on hover, from the same container -->
     <input
       type="range"
       id="volumeSlider"
@@ -298,16 +279,13 @@
       const proceedButton = document.getElementById('proceedButton');
       const volumeControl = document.getElementById('volumeControl');
 
-      // Hide "click" button and unblur background
       proceedButton.classList.add('hide-proceed');
       background.classList.add('unblurred');
 
-      // Fade out overlay and fade in main blurred-box
       setTimeout(() => {
         overlay.classList.add('fade-out');
         blurredBox.classList.add('fade-in');
 
-        // Show volume control after they enter
         volumeControl.style.display = 'block';
       }, 1000);
 
@@ -318,7 +296,6 @@
       audio1 = new Audio('ref/misc/audio1.mp3');
       audio2 = new Audio('ref/misc/audio2.mp3');
 
-      // Default volume is 0.5, max is 0.5
       audio1.volume = 0.5;
       audio2.volume = 0.5;
       audio2.loop = true;
@@ -329,13 +306,11 @@
       });
     }
 
-    // Volume Controls
     const volumeButton = document.getElementById('volumeButton');
     const volumeSlider = document.getElementById('volumeSlider');
 
     volumeButton.addEventListener('click', () => {
       if (!isMuted) {
-        // Mute: remember lastVolume, set slider to 0
         lastVolume = parseFloat(volumeSlider.value);
         volumeSlider.value = 0;
         audio1.volume = 0;
@@ -343,7 +318,6 @@
         isMuted = true;
         volumeButton.classList.replace('fa-volume-up', 'fa-volume-mute');
       } else {
-        // Unmute: restore lastVolume
         volumeSlider.value = lastVolume.toString();
         audio1.volume = lastVolume;
         audio2.volume = lastVolume;
@@ -355,14 +329,12 @@
     volumeSlider.addEventListener('input', (e) => {
       const volume = parseFloat(e.target.value);
 
-      // If the user drags to 0, auto-mute
       if (volume === 0) {
         isMuted = true;
         volumeButton.classList.replace('fa-volume-up', 'fa-volume-mute');
         audio1.volume = 0;
         audio2.volume = 0;
       } else {
-        // Above 0 => unmute
         isMuted = false;
         volumeButton.classList.replace('fa-volume-mute', 'fa-volume-up');
         audio1.volume = volume;
@@ -371,7 +343,6 @@
       }
     });
 
-    // Typing Text
     const phrases = [
       "follow my instagram & roblox",
       "discord.gg/jayson",
