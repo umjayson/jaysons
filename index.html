@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <meta property="og:title" content="@jayson - 🤷‍♂️" />
   <meta property="og:description" content="the world is yours" />
   <meta property="og:image" content="https://jaysons.lol/ref/misc/batman.png" />
@@ -84,14 +84,14 @@
       50%      { border-color: white; }
     }
 
-    /* Volume control container */
+    /* Single container: volume button + slider (hidden until user clicks) */
     .volume-control-blurred {
       position: fixed;
       top: 20px;
       left: 20px;
       z-index: 100;
 
-      /* Start as a 40×40 box for the icon */
+      /* Initially 40×40 to show only the icon in the center */
       width: 40px;
       height: 40px;
       display: none; /* hidden until "click to enter" */
@@ -103,68 +103,53 @@
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0);
 
-      /* Center the icon */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      /* We'll allow overflow so the slider can appear outside if needed */
-      overflow: visible;
+      /* Overflow hidden so the slider can't appear outside until hovered */
+      overflow: hidden;
+      transition: width 0.3s ease;
     }
 
-    /* The volume icon, centered in the 40×40 container */
+    /* Expand to make room for the slider on hover */
+    .volume-control-blurred:hover {
+      width: 140px; /* enough space to reveal the slider to the right */
+    }
+
+    /* Center the volume icon in the 40×40 box */
     .volume-button {
+      position: absolute; 
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: auto; /* center horizontally & vertically */
       font-size: 1.2rem;
       color: white;
       cursor: pointer;
-      z-index: 2; /* Keep above slider container */
+      text-align: center;
+      line-height: 40px; /* vertically center text inside the 40px area */
     }
 
-    /* The slider container that appears on hover, offset to the right */
-    .slider-container {
+    /* The slider is placed to the right, hidden until container expands */
+    .volume-slider {
       position: absolute;
-      left: 50px; /* just to the right of the icon container */
+      left: 50px;   /* offset from the left so icon doesn't overlap it */
       top: 0;
       bottom: 0;
-      margin: auto 0; /* center it vertically relative to the parent */
-
+      margin: auto 0; /* center vertically within the container's height */
       width: 80px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
 
-      /* Blurred background for the slider, matching the icon container */
-      background: rgba(255, 255, 255, 0.075);
-      backdrop-filter: blur(10px);
-      border-radius: 10px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0);
-
-      /* hidden/ collapsed by default (scaleX(0)) */
+      /* Start invisible and non-interactive */
       opacity: 0;
       transform: scaleX(0);
       transform-origin: left center;
+      pointer-events: none;
       transition: transform 0.3s ease, opacity 0.3s ease;
-      pointer-events: none; /* can't interact when hidden */
     }
 
-    /* On hover, the slider container becomes visible */
-    .volume-control-blurred:hover .slider-container {
-      opacity: 1;
+    /* On hover, the container grows, so we show the slider */
+    .volume-control-blurred:hover .volume-slider {
       transform: scaleX(1);
+      opacity: 1;
       pointer-events: auto;
     }
 
-    /* Actual slider styling: white track + white thumb (dot) */
-    .volume-slider {
-      width: 70%;
-      appearance: none;
-      outline: none;
-      cursor: pointer;
-      background: transparent;
-    }
-    /* White track */
+    /* Slider styling: white track + white thumb (dot) */
     .volume-slider::-webkit-slider-runnable-track {
       height: 3px;
       background: white;
@@ -175,7 +160,6 @@
       background: white;
       border-radius: 2px;
     }
-    /* White thumb (dot) */
     .volume-slider::-webkit-slider-thumb {
       appearance: none;
       background: white;
@@ -191,6 +175,12 @@
       width: 12px;
       height: 12px;
       cursor: pointer;
+    }
+    .volume-slider {
+      appearance: none;
+      outline: none;
+      cursor: pointer;
+      background: transparent;
     }
   </style>
 </head>
@@ -263,33 +253,26 @@
     </div>
   </div>
 
-  <!-- Volume Control Blurred Box (initially hidden) -->
+  <!-- Volume Control (hidden until they enter) -->
   <div class="volume-control-blurred" id="volumeControl">
-    <!-- Volume Icon in Center -->
+    <!-- Icon in the center of the initial 40×40 box -->
     <i class="fas fa-volume-up volume-button" id="volumeButton"></i>
 
-    <!-- Slider container expands on hover -->
-    <div class="slider-container">
-      <!-- Max volume is 0.5 -->
-      <input
-        type="range"
-        id="volumeSlider"
-        class="volume-slider"
-        min="0"
-        max="0.5"
-        step="0.01"
-        value="0.5"
-      />
-    </div>
+    <!-- Slider extends on hover -->
+    <input
+      type="range"
+      id="volumeSlider"
+      class="volume-slider"
+      min="0"
+      max="0.5"
+      step="0.01"
+      value="0.5"
+    />
   </div>
 
   <script>
     let hasClicked = false;
-
-    // For toggling the volume button
     let isMuted = false;
-
-    // We remember the last non-zero volume
     let lastVolume = 0.5;
 
     let audio1, audio2;
@@ -312,8 +295,9 @@
       setTimeout(() => {
         overlay.classList.add('fade-out');
         blurredBox.classList.add('fade-in');
+
         // Show volume control after they enter
-        volumeControl.style.display = 'flex';
+        volumeControl.style.display = 'block';
       }, 1000);
 
       playAudioSequence();
