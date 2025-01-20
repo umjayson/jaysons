@@ -84,35 +84,58 @@
 
     /* Volume control blurred box (hidden by default) */
     .volume-control-blurred {
-      display: none; /* Hidden initially */
-      width: 120px;
-      height: 60px;
+      /* Start small to only show the icon */
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: none; /* Will be shown after clicking "enter" */
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      /* Blurred background styling */
       background: rgba(255, 255, 255, 0.075);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0);
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
+
       position: fixed;
       top: 20px;
       left: 20px;
       z-index: 100;
-      gap: 8px;
+
+      /* Smooth animation on hover */
+      transition:
+        width 0.3s ease,
+        height 0.3s ease,
+        padding 0.3s ease;
+      overflow: hidden;
+    }
+    .volume-control-blurred:hover {
+      /* Extend the container on hover to show slider */
+      width: 140px;
+      height: 60px;
       padding: 8px;
     }
 
     .volume-button {
       font-size: 1.2rem; /* slightly smaller icon */
-      cursor: pointer;
       color: white;
+      cursor: pointer;
+      flex-shrink: 0; /* Keep icon from shrinking */
     }
 
     .volume-slider {
-      width: 80px;
-      position: relative;
+      /* Hide the slider visually when container is small */
+      flex: 1;
+      opacity: 0;
+      transition: opacity 0.2s ease;
     }
+    .volume-control-blurred:hover .volume-slider {
+      opacity: 1;
+    }
+
     .volume-slider input[type="range"] {
       width: 100%;
       appearance: none;
@@ -120,7 +143,7 @@
       cursor: pointer;
       background: transparent; /* We'll style the track separately */
     }
-    /* Slider track (white line behind the dot) */
+    /* Slider track (white line) */
     .volume-slider input[type="range"]::-webkit-slider-runnable-track {
       height: 3px;
       background: white;
@@ -148,24 +171,25 @@
       height: 12px;
       cursor: pointer;
     }
-
-    /* Show the volume slider on hover, if desired:
-    .volume-control-blurred:hover .volume-slider {
-      display: block;
-    } */
   </style>
 </head>
 
 <body class="blurred">
-  <div class="background" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-       background-image: url('ref/misc/backgroundgif.gif');
-       background-size: cover; background-position: center;">
+  <!-- Background Image -->
+  <div
+    class="background"
+    style="position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+           background-image: url('ref/misc/backgroundgif.gif');
+           background-size: cover;
+           background-position: center;">
   </div>
 
+  <!-- Overlay with "Click to Enter" -->
   <div class="overlay" id="overlay" onclick="handleEnter()">
     <div class="proceed-button" id="proceedButton">click</div>
   </div>
-
+  
+  <!-- Main Blurred Box with Profile Content -->
   <div class="blurred-box">
     <div class="profile-wrapper">
       <div class="profile-decoration"></div>
@@ -199,12 +223,19 @@
     </div>
   </div>
 
-  <!-- Volume control blurred box (hidden by default) -->
+  <!-- Volume Control Blurred Box (initially hidden) -->
   <div class="volume-control-blurred" id="volumeControl">
     <i class="fas fa-volume-up volume-button" id="volumeButton"></i>
     <div class="volume-slider">
       <!-- Max volume is 0.5 -->
-      <input type="range" id="volumeSlider" min="0" max="0.5" step="0.01" value="0.5" />
+      <input
+        type="range"
+        id="volumeSlider"
+        min="0"
+        max="0.5"
+        step="0.01"
+        value="0.5"
+      />
     </div>
   </div>
 
