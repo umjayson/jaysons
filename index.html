@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta property="og:title" content="@jayson - 🤷‍♂️" />
   <meta property="og:description" content="the world is yours" />
   <meta property="og:image" content="https://jaysons.lol/ref/misc/batman.png" />
   <meta property="og:url" content="https://jaysons.lol" />
-  <meta property="theme-color" content="#1b1b1b">
-  <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script>
+  <meta property="theme-color" content="#1b1b1b" />
+  <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool@latest"></script>
   <script src="ref/js/sexymouse.js"></script>
   <script src="ref/js/bettersnow.js"></script>
   <script src="ref/js/ZOOOOOOOOM.js"></script>
   <title>@jayson</title>
-  <link rel="icon" href="/ref/misc/batmanimage.png" type="image/x-icon">
-  <link rel="stylesheet" href="ref/css/styles.css">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="icon" href="/ref/misc/batmanimage.png" type="image/x-icon" />
+  <link rel="stylesheet" href="ref/css/styles.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
 
   <style>
     /* Main blurred-box for content */
@@ -74,76 +76,88 @@
       transition: opacity 1s ease;
     }
     @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
+      from { width: 0; }
+      to   { width: 100%; }
     }
     @keyframes blink-caret {
-      from, to { border-color: transparent }
-      50% { border-color: white }
+      from, to { border-color: transparent; }
+      50%      { border-color: white; }
     }
 
-    /* Volume control blurred box (hidden by default) */
+    /* Volume control container
+       - starts as a small square (40x40) with icon centered
+       - expands in width on hover to show slider on the right */
     .volume-control-blurred {
-      /* Start small to only show the icon */
-      width: 40px;
-      height: 40px;
-      padding: 0;
-      display: none; /* Will be shown after clicking "enter" */
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
 
-      /* Blurred background styling */
+      width: 40px;      /* initial width to just show icon */
+      height: 40px;     /* fixed height */
+      overflow: hidden; /* hide slider when collapsed */
+
+      display: none;    /* shown after "click to enter" */
       background: rgba(255, 255, 255, 0.075);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0);
 
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 100;
-
-      /* Smooth animation on hover */
       transition:
         width 0.3s ease,
-        height 0.3s ease,
-        padding 0.3s ease;
-      overflow: hidden;
+        height 0.3s ease;
     }
+    /* Expand to the right on hover */
     .volume-control-blurred:hover {
-      /* Extend the container on hover to show slider */
-      width: 140px;
-      height: 60px;
-      padding: 8px;
+      width: 160px; /* expand enough to reveal the slider on the right */
     }
 
+    /* Center the volume icon absolutely in the 40x40 box */
     .volume-button {
-      font-size: 1.2rem; /* slightly smaller icon */
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;   /* centers icon horizontally & vertically */
+      font-size: 1.2rem;
       color: white;
+      text-align: center;
+      line-height: 40px;
       cursor: pointer;
-      flex-shrink: 0; /* Keep icon from shrinking */
     }
 
+    /* Slider on the right side, hidden until container expands */
     .volume-slider {
-      /* Hide the slider visually when container is small */
-      flex: 1;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      margin: auto 0;    /* center vertically */
+      right: 10px;       /* keep some space from the right edge */
+      width: 0;          /* collapsed by default */
       opacity: 0;
-      transition: opacity 0.2s ease;
+      transition: width 0.3s ease, opacity 0.3s ease;
+      display: flex;
+      align-items: center;
     }
+    /* When hovered (container is bigger), show the slider */
     .volume-control-blurred:hover .volume-slider {
+      width: 90px;
       opacity: 1;
     }
 
+    /* Slider styling: white track + white dot */
     .volume-slider input[type="range"] {
       width: 100%;
       appearance: none;
       outline: none;
       cursor: pointer;
-      background: transparent; /* We'll style the track separately */
+      background: transparent;
     }
-    /* Slider track (white line) */
+    /* White track */
     .volume-slider input[type="range"]::-webkit-slider-runnable-track {
       height: 3px;
       background: white;
@@ -154,14 +168,14 @@
       background: white;
       border-radius: 2px;
     }
-    /* Slider thumb (the dot) */
+    /* White thumb (dot) */
     .volume-slider input[type="range"]::-webkit-slider-thumb {
       appearance: none;
       background: white;
       border-radius: 50%;
       width: 12px;
       height: 12px;
-      margin-top: -5px; /* center the thumb vertically on the track */
+      margin-top: -5px; /* center thumb vertically on track */
       cursor: pointer;
     }
     .volume-slider input[type="range"]::-moz-range-thumb {
@@ -178,11 +192,14 @@
   <!-- Background Image -->
   <div
     class="background"
-    style="position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-           background-image: url('ref/misc/backgroundgif.gif');
-           background-size: cover;
-           background-position: center;">
-  </div>
+    style="
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('ref/misc/backgroundgif.gif');
+      background-size: cover;
+      background-position: center;
+    "
+  ></div>
 
   <!-- Overlay with "Click to Enter" -->
   <div class="overlay" id="overlay" onclick="handleEnter()">
@@ -208,16 +225,32 @@
     </div>
     <div class="static-text" id="dynamic-text"></div>
     <div class="icon-wrapper">
-      <a href="https://www.instagram.com/jaysons.lol" class="icon-button" target="_blank">
+      <a
+        href="https://www.instagram.com/jaysons.lol"
+        class="icon-button"
+        target="_blank"
+      >
         <i class="fab fa-instagram"></i>
       </a>
-      <a href="https://www.roblox.com/users/3290769146/profile" class="icon-button" target="_blank">
+      <a
+        href="https://www.roblox.com/users/3290769146/profile"
+        class="icon-button"
+        target="_blank"
+      >
         <i class="fas fa-globe"></i>
       </a>
-      <a href="https://discord.gg/stupid" class="icon-button" target="_blank">
+      <a
+        href="https://discord.gg/stupid"
+        class="icon-button"
+        target="_blank"
+      >
         <i class="fab fa-discord"></i>
       </a>
-      <a href="https://www.tiktok.com/@umjayson" class="icon-button" target="_blank">
+      <a
+        href="https://www.tiktok.com/@umjayson"
+        class="icon-button"
+        target="_blank"
+      >
         <i class="fab fa-tiktok"></i>
       </a>
     </div>
@@ -263,7 +296,7 @@
         overlay.classList.add('fade-out');
         blurredBox.classList.add('fade-in');
         // Show volume control after they enter
-        volumeControl.style.display = 'flex';
+        volumeControl.style.display = 'block';
       }, 1000);
 
       playAudioSequence();
@@ -347,7 +380,7 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', () => {
       typePhrase();
     });
   </script>
