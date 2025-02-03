@@ -59,55 +59,59 @@
     /* =========================
        2) WRAPPER FOR SLIDE-UP
        =========================
-       This wrapper starts off-screen at the bottom
-       and moves into the center with a fade-in.
+       This wrapper starts below the screen,
+       slides into the center, and holds #mainBox.
     */
     #mainBoxWrapper {
       position: fixed;
       left: 50%;
       top: 100%; /* Start below the bottom edge */
       transform: translateX(-50%);
+      width: 600px;   /* Adjust as desired */
+      height: 500px;  /* Adjust as desired */
       opacity: 0;
       transition: top 1s ease, opacity 1s ease;
       z-index: 10;
     }
     #mainBoxWrapper.fade-in {
-      top: 50%; /* Move to vertical center */
-      opacity: 1;
+      top: 50%;
       transform: translate(-50%, -50%);
+      opacity: 1;
     }
 
     /* =========================
-       3) THE BOX ITSELF (3D TILT)
+       3) MAIN BOX (3D TILT)
        =========================
-       We'll place the "blurred-box" styles here.
-       It's inside the wrapper, so the wrapper
-       handles the slide; the box handles tilt.
+       - We give it a blurred background & 3D tilt.
+       - The child content (profile info, text, etc.) goes inside.
     */
     #mainBox {
-      /* Size/styling as needed. 
-         We'll give it "transform-style: preserve-3d"
-         so the 3D rotations are visible.
-      */
+      /* Fill the wrapper dimensions */
+      width: 100%;
+      height: 100%;
+
+      /* Blurred background style for the box itself */
+      background: rgba(255, 255, 255, 0.075);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0);
+
+      /* Layout settings for child elements */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
       transform-style: preserve-3d;
       transition: transform 0.3s ease; /* for tilt smoothing */
-
-      /* Additional styling if you want a background behind the elements:
-         background: rgba(255, 255, 255, 0.1);
-         backdrop-filter: blur(10px);
-         border-radius: 15px;
-         etc.
-      */
+      overflow: hidden; /* if you want to hide overflow */
+      position: relative;
     }
 
-    /* Replacing your .blurred-box styles for the child.
-       If you had an actual blurred background here, you can add it below:
-    */
+    /* Example styling for the child elements in #mainBox */
     .profile-wrapper, .profile-name, .showcase, .icon-wrapper {
-      /* If you want them inside a 'box' visually, 
-         put your background styles in #mainBox above, 
-         or each child, as needed.
-       */
+      margin: 10px;
     }
 
     /* =========================
@@ -116,8 +120,7 @@
     .static-text {
       font-size: 1.5rem;
       color: white;
-      bottom: 115px;
-      margin-top: 25px;
+      margin-top: 10px;
       height: 40px;
       overflow: hidden;
       border-right: 2px solid;
