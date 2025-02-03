@@ -57,39 +57,22 @@
     }
 
     /* =========================
-       2) BLURRED-BOX UNFOLD
+       2) BLURRED-BOX SLIDE-UP
        ========================= */
-    /*
-      We use "transform: scaleY(0)" + "opacity: 0" initially,
-      then "transform: scaleY(1)" + "opacity: 1" on .fade-in
-      for a smooth "unfolding" effect from the top.
-    */
     .blurred-box {
-      /* Start folded & transparent */
-      transform: scaleY(0);
-      transform-origin: top center;
+      /* Start off-screen at bottom & hidden */
+      transform: translateY(100vh);
       opacity: 0;
       transition: transform 1s ease, opacity 1s ease;
-
-      /* The rest of your styling is inside .blurred-box's children (profile etc.) */
+      transform-style: preserve-3d; /* keep for 3D rotation effect */
     }
     .blurred-box.fade-in {
-      /* Unfold + fade in */
-      transform: scaleY(1);
+      transform: translateY(0);
       opacity: 1;
     }
 
     /* =========================
-       3) 3D "LOOK AROUND" ON HOVER
-       ========================= */
-    /* We'll enable "preserve-3d" so rotates feel realistic */
-    .blurred-box {
-      transform-style: preserve-3d;
-    }
-    /* By default, it's not rotated. We'll rotate it via JS on mousemove. */
-    
-    /* =========================
-       4) TYPING TEXT
+       3) TYPING TEXT
        ========================= */
     .static-text {
       font-size: 1.5rem;
@@ -114,7 +97,7 @@
     }
 
     /* =========================
-       5) VOLUME CONTROL
+       4) VOLUME CONTROL
        ========================= */
     .volume-control-blurred {
       position: fixed;
@@ -310,11 +293,11 @@
       proceedButton.classList.add('hide-proceed');
       background.classList.add('unblurred');
 
-      // Fade out overlay, then "unfold" the main blurred box
+      // Fade out overlay, then "slide up" the main blurred box
       setTimeout(() => {
         overlay.classList.add('fade-out');
 
-        // Add our "fade-in" class to unfold the .blurred-box
+        // Add our "fade-in" class to move up + fade in
         blurredBox.classList.add('fade-in');
 
         // Show volume control
@@ -414,8 +397,11 @@
       typePhrase();
     });
 
-     blurredBox.addEventListener('mousemove', (e) => {
-      const rect =  blurredBox.getBoundingClientRect();
+    /* =========================================
+       4) 3D "LOOK AROUND" ON HOVER
+       ========================================= */
+    blurredBox.addEventListener('mousemove', (e) => {
+      const rect = blurredBox.getBoundingClientRect();
       const x    = e.clientX - rect.left;
       const y    = e.clientY - rect.top;
 
@@ -423,30 +409,30 @@
       const zoneX = x / rect.width;
       const zoneY = y / rect.height;
 
-      let rotateX = 0; // "tilt up/down"
-      let rotateY = 0; // "tilt left/right"
+      let rotateX = 0; // tilt up/down
+      let rotateY = 0; // tilt left/right
 
       // Horizontal tilt
       if (zoneX < 0.33) {
-        rotateY = 15;  // tilt left
+        rotateY = 15;   // tilt left
       } else if (zoneX > 0.66) {
-        rotateY = -15; // tilt right
+        rotateY = -15;  // tilt right
       }
 
       // Vertical tilt
       if (zoneY < 0.33) {
-        rotateX = 15;  // tilt up
+        rotateX = 15;   // tilt up
       } else if (zoneY > 0.66) {
-        rotateX = -15; // tilt down
+        rotateX = -15;  // tilt down
       }
 
-      // Apply the combined rotation
-       blurredBox.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      // Combine the "slide-up" position (translateY(0)) with rotate
+      blurredBox.style.transform = `translateY(0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
     // When mouse leaves the box, snap back to center orientation
     blurredBox.addEventListener('mouseleave', () => {
-      blurredBox.style.transform = 'rotateX(0) rotateY(0)';
+      blurredBox.style.transform = 'translateY(0) rotateX(0) rotateY(0)';
     });
   </script>
 </body>
