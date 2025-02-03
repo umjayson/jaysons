@@ -21,14 +21,21 @@
   />
 
   <style>
-    .blurred-box {
-      opacity: 0;
-      transition: opacity 1.5s ease;
+    /* =========================
+       1) BACKGROUND + OVERLAY
+       ========================= */
+    .background {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('ref/misc/backgroundgif.gif');
+      background-size: cover;
+      background-position: center;
+      filter: blur(8px);
+      transition: filter 1.5s ease;
     }
-    .fade-in {
-      opacity: 1;
+    .unblurred {
+      filter: blur(0);
     }
-
     #overlay {
       opacity: 1;
       transition: opacity 1s ease;
@@ -38,14 +45,7 @@
       visibility: hidden;
     }
 
-    .background {
-      filter: blur(8px);
-      transition: filter 1.5s ease;
-    }
-    .unblurred {
-      filter: blur(0);
-    }
-
+    /* "Click to enter" button */
     .proceed-button {
       opacity: 1;
       transition: opacity 1s ease;
@@ -56,6 +56,41 @@
       pointer-events: none;
     }
 
+    /* =========================
+       2) BLURRED-BOX UNFOLD
+       ========================= */
+    /*
+      We use "transform: scaleY(0)" + "opacity: 0" initially,
+      then "transform: scaleY(1)" + "opacity: 1" on .fade-in
+      for a smooth "unfolding" effect from the top.
+    */
+    .blurred-box {
+      /* Start folded & transparent */
+      transform: scaleY(0);
+      transform-origin: top center;
+      opacity: 0;
+      transition: transform 1s ease, opacity 1s ease;
+
+      /* The rest of your styling is inside .blurred-box's children (profile etc.) */
+    }
+    .blurred-box.fade-in {
+      /* Unfold + fade in */
+      transform: scaleY(1);
+      opacity: 1;
+    }
+
+    /* =========================
+       3) 3D "LOOK AROUND" ON HOVER
+       ========================= */
+    /* We'll enable "preserve-3d" so rotates feel realistic */
+    .blurred-box {
+      transform-style: preserve-3d;
+    }
+    /* By default, it's not rotated. We'll rotate it via JS on mousemove. */
+    
+    /* =========================
+       4) TYPING TEXT
+       ========================= */
     .static-text {
       font-size: 1.5rem;
       color: white;
@@ -67,7 +102,6 @@
       white-space: nowrap;
       letter-spacing: 2px;
       animation: blink-caret 0.75s step-end infinite;
-      opacity: 1;
       transition: opacity 1s ease;
     }
     @keyframes typing {
@@ -79,6 +113,9 @@
       50%      { border-color: white; }
     }
 
+    /* =========================
+       5) VOLUME CONTROL
+       ========================= */
     .volume-control-blurred {
       position: fixed;
       top: 20px;
@@ -87,7 +124,7 @@
 
       width: 40px;
       height: 40px;
-      display: none; 
+      display: none; /* hidden until "click to enter" */
 
       background: rgba(255, 255, 255, 0.075);
       backdrop-filter: blur(10px);
@@ -98,11 +135,9 @@
       overflow: hidden;
       transition: width 0.3s ease;
     }
-
     .volume-control-blurred:hover {
-      width: 140px; 
+      width: 140px;
     }
-
     .icon-wrap {
       position: absolute;
       top: 0; left: 0;
@@ -112,7 +147,6 @@
       align-items: center;
       justify-content: center;
     }
-
     .volume-button {
       font-size: 1.2rem;
       color: white;
@@ -120,13 +154,12 @@
       text-align: center;
       line-height: 40px;
     }
-
     .volume-slider {
       position: absolute;
       top: 0;
       bottom: 0;
-      margin: auto 0;  
-      left: 50px;     
+      margin: auto 0;
+      left: 50px;
       width: 80px;
 
       opacity: 0;
@@ -135,13 +168,17 @@
       pointer-events: none;
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
-
     .volume-control-blurred:hover .volume-slider {
       transform: scaleX(1);
       opacity: 1;
       pointer-events: auto;
     }
-
+    .volume-slider {
+      appearance: none;
+      outline: none;
+      cursor: pointer;
+      background: transparent;
+    }
     .volume-slider::-webkit-slider-runnable-track {
       height: 3px;
       background: white;
@@ -158,7 +195,7 @@
       border-radius: 50%;
       width: 12px;
       height: 12px;
-      margin-top: -5px; 
+      margin-top: -5px;
       cursor: pointer;
     }
     .volume-slider::-moz-range-thumb {
@@ -168,32 +205,20 @@
       height: 12px;
       cursor: pointer;
     }
-    .volume-slider {
-      appearance: none;
-      outline: none;
-      cursor: pointer;
-      background: transparent;
-    }
   </style>
 </head>
 
 <body class="blurred">
-  <div
-    class="background"
-    style="
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-image: url('ref/misc/backgroundgif.gif');
-      background-size: cover;
-      background-position: center;
-    "
-  ></div>
+  <!-- Background Image -->
+  <div class="background"></div>
 
+  <!-- Overlay with "Click to Enter" -->
   <div class="overlay" id="overlay" onclick="handleEnter()">
     <div class="proceed-button" id="proceedButton">click</div>
   </div>
   
-  <div class="blurred-box">
+  <!-- Main Blurred Box with Profile Content -->
+  <div class="blurred-box" id="mainBox">
     <div class="profile-wrapper">
       <div class="profile-decoration"></div>
       <div class="profile-picture"></div>
@@ -246,11 +271,11 @@
     </div>
   </div>
 
+  <!-- Volume Control (hidden until user clicks) -->
   <div class="volume-control-blurred" id="volumeControl">
     <div class="icon-wrap">
       <i class="fas fa-volume-up volume-button" id="volumeButton"></i>
     </div>
-
     <input
       type="range"
       id="volumeSlider"
@@ -263,29 +288,36 @@
   </div>
 
   <script>
+    /* =========================================
+       1) ENTER CLICK => SHOW BLURRED BOX, ETC.
+       ========================================= */
     let hasClicked = false;
     let isMuted = false;
     let lastVolume = 0.5;
-
     let audio1, audio2;
+
+    const overlay          = document.getElementById('overlay');
+    const proceedButton    = document.getElementById('proceedButton');
+    const background       = document.querySelector('.background');
+    const blurredBox       = document.getElementById('mainBox');
+    const volumeControl    = document.getElementById('volumeControl');
 
     function handleEnter() {
       if (hasClicked) return;
       hasClicked = true;
 
-      const overlay = document.getElementById('overlay');
-      const background = document.querySelector('.background');
-      const blurredBox = document.querySelector('.blurred-box');
-      const proceedButton = document.getElementById('proceedButton');
-      const volumeControl = document.getElementById('volumeControl');
-
+      // Hide the "click" button, unblur background
       proceedButton.classList.add('hide-proceed');
       background.classList.add('unblurred');
 
+      // Fade out overlay, then "unfold" the main blurred box
       setTimeout(() => {
         overlay.classList.add('fade-out');
+
+        // Add our "fade-in" class to unfold the .blurred-box
         blurredBox.classList.add('fade-in');
 
+        // Show volume control
         volumeControl.style.display = 'block';
       }, 1000);
 
@@ -295,17 +327,18 @@
     function playAudioSequence() {
       audio1 = new Audio('ref/misc/audio1.mp3');
       audio2 = new Audio('ref/misc/audio2.mp3');
-
       audio1.volume = 0.5;
       audio2.volume = 0.5;
       audio2.loop = true;
-
       audio1.play();
       audio1.addEventListener('ended', () => {
         audio2.play();
       });
     }
 
+    /* =========================================
+       2) VOLUME CONTROL
+       ========================================= */
     const volumeButton = document.getElementById('volumeButton');
     const volumeSlider = document.getElementById('volumeSlider');
 
@@ -328,7 +361,6 @@
 
     volumeSlider.addEventListener('input', (e) => {
       const volume = parseFloat(e.target.value);
-
       if (volume === 0) {
         isMuted = true;
         volumeButton.classList.replace('fa-volume-up', 'fa-volume-mute');
@@ -343,12 +375,14 @@
       }
     });
 
+    /* =========================================
+       3) TYPING TEXT
+       ========================================= */
     const phrases = [
       "@@",
       "follow my instagram & roblox",
       "the world is yours"
     ];
-    
     let phraseIndex = 0;
     let charIndex = 0;
     const typingSpeed = 100;
@@ -378,6 +412,57 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       typePhrase();
+    });
+
+    /* =========================================
+       4) 3D "LOOK AROUND" ON HOVER
+       =========================================
+       We'll rotate the .blurred-box in discrete zones:
+       - If mouse is near left => tilt left
+       - If near right => tilt right
+       - If near top => tilt up
+       - If near bottom => tilt down
+       - Otherwise => center
+       And "mouseout" => center again
+    */
+    blurredBox.addEventListener('mousemove', (e) => {
+      const rect = blurredBox.getBoundingClientRect();
+      const x    = e.clientX - rect.left;
+      const y    = e.clientY - rect.top;
+
+      // Compute normalized zone [0..1]
+      const zoneX = x / rect.width;
+      const zoneY = y / rect.height;
+
+      // We'll define a threshold area ~ 1/3.
+      // If zoneX < 0.33 => tilt left, > 0.66 => tilt right, else center.
+      // If zoneY < 0.33 => tilt up, > 0.66 => tilt down, else center.
+      // Adjust angles to your preference.
+      let rotateX = 0;
+      let rotateY = 0;
+
+      // Horizontal
+      if (zoneX < 0.33) {
+        rotateY = 15;   // tilt left
+      } else if (zoneX > 0.66) {
+        rotateY = -15;  // tilt right
+      }
+
+      // Vertical
+      if (zoneY < 0.33) {
+        rotateX = 15;   // tilt "up"
+      } else if (zoneY > 0.66) {
+        rotateX = -15;  // tilt "down"
+      }
+
+      // Apply combined rotation
+      // We keep scaleY(1) to preserve the "unfolded" state
+      blurredBox.style.transform = `scaleY(1) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    // When mouse leaves the box, snap back to center orientation
+    blurredBox.addEventListener('mouseleave', () => {
+      blurredBox.style.transform = 'scaleY(1) rotateX(0) rotateY(0)';
     });
   </script>
 </body>
