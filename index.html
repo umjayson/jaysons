@@ -63,7 +63,8 @@
       /* Start off-screen at bottom & hidden */
       transform: translateY(100vh);
       opacity: 0;
-      transition: transform 1s ease, opacity 1s ease;
+      /* Make transitions faster (0.6s) and fade at the same time */
+      transition: transform 0.6s ease, opacity 0.6s ease;
       transform-style: preserve-3d; /* keep for 3D rotation effect */
     }
     .blurred-box.fade-in {
@@ -279,11 +280,11 @@
     let lastVolume = 0.5;
     let audio1, audio2;
 
-    const overlay          = document.getElementById('overlay');
-    const proceedButton    = document.getElementById('proceedButton');
-    const background       = document.querySelector('.background');
-    const blurredBox       = document.getElementById('mainBox');
-    const volumeControl    = document.getElementById('volumeControl');
+    const overlay       = document.getElementById('overlay');
+    const proceedButton = document.getElementById('proceedButton');
+    const background    = document.querySelector('.background');
+    const blurredBox    = document.getElementById('mainBox');
+    const volumeControl = document.getElementById('volumeControl');
 
     function handleEnter() {
       if (hasClicked) return;
@@ -302,7 +303,7 @@
 
         // Show volume control
         volumeControl.style.display = 'block';
-      }, 1000);
+      }, 500); // shortened to 0.5s so it starts faster
 
       playAudioSequence();
     }
