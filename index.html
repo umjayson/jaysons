@@ -31,14 +31,17 @@
       background-size: cover;
       background-position: center;
       filter: blur(8px);
-      transition: filter 1.5s ease;
+      /* Faster fade from blur to sharp */
+      transition: filter 0.8s ease;
     }
     .unblurred {
       filter: blur(0);
     }
+
     #overlay {
       opacity: 1;
-      transition: opacity 1s ease;
+      /* Faster fade-out */
+      transition: opacity 0.8s ease;
     }
     .fade-out {
       opacity: 0;
@@ -48,7 +51,7 @@
     /* "Click to enter" button */
     .proceed-button {
       opacity: 1;
-      transition: opacity 1s ease;
+      transition: opacity 0.8s ease;
       pointer-events: auto;
     }
     .hide-proceed {
@@ -59,18 +62,19 @@
     /* =========================
        2) WRAPPER FOR SLIDE-UP
        =========================
-       This wrapper starts below the screen,
-       slides into the center, and holds #mainBox.
+       Smaller box, slides from bottom to center
+       and fades in quickly.
     */
     #mainBoxWrapper {
       position: fixed;
       left: 50%;
-      top: 100%; /* Start below the bottom edge */
+      top: 100%; /* start below the bottom edge */
       transform: translateX(-50%);
-      width: 600px;   /* Adjust as desired */
-      height: 500px;  /* Adjust as desired */
+      width: 350px;   /* RESTORED smaller size */
+      height: 300px;  /* RESTORED smaller size */
       opacity: 0;
-      transition: top 1s ease, opacity 1s ease;
+      /* faster transition for slide & opacity */
+      transition: top 0.8s ease, opacity 0.8s ease;
       z-index: 10;
     }
     #mainBoxWrapper.fade-in {
@@ -82,35 +86,36 @@
     /* =========================
        3) MAIN BOX (3D TILT)
        =========================
-       - We give it a blurred background & 3D tilt.
-       - The child content (profile info, text, etc.) goes inside.
+       - Fills the wrapper
+       - Blurred background
+       - 3D tilt on hover
     */
     #mainBox {
-      /* Fill the wrapper dimensions */
       width: 100%;
       height: 100%;
 
-      /* Blurred background style for the box itself */
       background: rgba(255, 255, 255, 0.075);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0);
 
-      /* Layout settings for child elements */
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
 
       transform-style: preserve-3d;
-      transition: transform 0.3s ease; /* for tilt smoothing */
-      overflow: hidden; /* if you want to hide overflow */
+      transition: transform 0.3s ease; /* tilt smoothing */
+      overflow: hidden;
       position: relative;
     }
 
-    /* Example styling for the child elements in #mainBox */
-    .profile-wrapper, .profile-name, .showcase, .icon-wrapper {
+    /* Example margin for children */
+    .profile-wrapper,
+    .profile-name,
+    .showcase,
+    .icon-wrapper {
       margin: 10px;
     }
 
@@ -127,7 +132,7 @@
       white-space: nowrap;
       letter-spacing: 2px;
       animation: blink-caret 0.75s step-end infinite;
-      transition: opacity 1s ease;
+      transition: opacity 0.8s ease;
     }
     @keyframes typing {
       from { width: 0; }
@@ -242,7 +247,7 @@
     <div class="proceed-button" id="proceedButton">click</div>
   </div>
   
-  <!-- WRAPPER that slides from bottom to center -->
+  <!-- Smaller WRAPPER that slides from bottom to center -->
   <div id="mainBoxWrapper">
     <!-- The box that tilts in 3D -->
     <div id="mainBox">
@@ -342,11 +347,7 @@
       // Fade out overlay, then slide & fade in the wrapper
       setTimeout(() => {
         overlay.classList.add('fade-out');
-
-        // Let the wrapper slide from bottom to center
         mainBoxWrapper.classList.add('fade-in');
-
-        // Show volume control
         volumeControl.style.display = 'block';
       }, 1000);
 
@@ -455,9 +456,6 @@
       const zoneX = x / rect.width;
       const zoneY = y / rect.height;
 
-      // We'll define a threshold area ~ 1/3:
-      // If zoneX < 0.33 => tilt left;  > 0.66 => tilt right; else center
-      // If zoneY < 0.33 => tilt up;    > 0.66 => tilt down;  else center
       let rotateX = 0; // "tilt up/down"
       let rotateY = 0; // "tilt left/right"
 
@@ -475,11 +473,9 @@
         rotateX = -15; // tilt down
       }
 
-      // Apply the combined rotation
       mainBox.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
-    // When mouse leaves the box, snap back to center orientation
     mainBox.addEventListener('mouseleave', () => {
       mainBox.style.transform = 'rotateX(0) rotateY(0)';
     });
