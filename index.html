@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <meta property="og:title" content="@jayson - 🤷‍♂️" />
   <meta property="og:description" content="the world is yours" />
-  <meta property="og:image" content="https://ilovemoney.lol/ref/misc/discordpfp.png" />
-  <meta property="og:url" content="https://ilovemoney.lol/" />
+  <meta property="og:image" content="https://jaysons.lol/ref/misc/discordpfp.png" />
+  <meta property="og:url" content="https://jaysons.lol" />
   <meta property="theme-color" content="#1b1b1b" />
   <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool@latest"></script>
   <script src="ref/js/sexymouse.js"></script>
   <script src="ref/js/bettersnow.js"></script>
   <script src="ref/js/ZOOOOOOOOM.js"></script>
   <title>@jayson</title>
-  <link rel="icon" href="/ref/misc/logo.png" type="image/x-icon">
+    <link rel="icon" href="/ref/misc/discordpfp.png" type="image/x-icon" />
   <link rel="stylesheet" href="ref/css/styles.css" />
   <link
     rel="stylesheet"
@@ -272,169 +272,7 @@
   </div>
 
   <script>
-    /* =========================================
-       1) ENTER CLICK => SHOW BLURRED BOX, ETC.
-       ========================================= */
-    let hasClicked = false;
-    let isMuted = false;
-    let lastVolume = 0.5;
-    let audio1, audio2;
-
-    const overlay       = document.getElementById('overlay');
-    const proceedButton = document.getElementById('proceedButton');
-    const background    = document.querySelector('.background');
-    const blurredBox    = document.getElementById('mainBox');
-    const volumeControl = document.getElementById('volumeControl');
-
-    function handleEnter() {
-      if (hasClicked) return;
-      hasClicked = true;
-
-      // Hide the "click" button, unblur background
-      proceedButton.classList.add('hide-proceed');
-      background.classList.add('unblurred');
-
-      // Fade out overlay, then "slide up" the main blurred box
-      setTimeout(() => {
-        overlay.classList.add('fade-out');
-
-        // Add our "fade-in" class to move up + fade in
-        blurredBox.classList.add('fade-in');
-
-        // Show volume control
-        volumeControl.style.display = 'block';
-      }, 500); // shortened to 0.5s so it starts faster
-
-      playAudioSequence();
-    }
-
-    function playAudioSequence() {
-      audio1 = new Audio('ref/misc/audio1.mp3');
-      audio2 = new Audio('ref/misc/audio2.mp3');
-      audio1.volume = 0.5;
-      audio2.volume = 0.5;
-      audio2.loop = true;
-      audio1.play();
-      audio1.addEventListener('ended', () => {
-        audio2.play();
-      });
-    }
-
-    /* =========================================
-       2) VOLUME CONTROL
-       ========================================= */
-    const volumeButton = document.getElementById('volumeButton');
-    const volumeSlider = document.getElementById('volumeSlider');
-
-    volumeButton.addEventListener('click', () => {
-      if (!isMuted) {
-        lastVolume = parseFloat(volumeSlider.value);
-        volumeSlider.value = 0;
-        audio1.volume = 0;
-        audio2.volume = 0;
-        isMuted = true;
-        volumeButton.classList.replace('fa-volume-up', 'fa-volume-mute');
-      } else {
-        volumeSlider.value = lastVolume.toString();
-        audio1.volume = lastVolume;
-        audio2.volume = lastVolume;
-        isMuted = false;
-        volumeButton.classList.replace('fa-volume-mute', 'fa-volume-up');
-      }
-    });
-
-    volumeSlider.addEventListener('input', (e) => {
-      const volume = parseFloat(e.target.value);
-      if (volume === 0) {
-        isMuted = true;
-        volumeButton.classList.replace('fa-volume-up', 'fa-volume-mute');
-        audio1.volume = 0;
-        audio2.volume = 0;
-      } else {
-        isMuted = false;
-        volumeButton.classList.replace('fa-volume-mute', 'fa-volume-up');
-        audio1.volume = volume;
-        audio2.volume = volume;
-        lastVolume = volume;
-      }
-    });
-
-    /* =========================================
-       3) TYPING TEXT
-       ========================================= */
-    const phrases = [
-      "@@",
-      "follow my instagram & roblox",
-      "the world is yours"
-    ];
-    let phraseIndex = 0;
-    let charIndex = 0;
-    const typingSpeed = 100;
-    const pauseBetweenPhrases = 2000;
-    const dynamicTextElement = document.getElementById('dynamic-text');
-
-    function typePhrase() {
-      if (charIndex < phrases[phraseIndex].length) {
-        dynamicTextElement.textContent += phrases[phraseIndex].charAt(charIndex);
-        charIndex++;
-        setTimeout(typePhrase, typingSpeed);
-      } else {
-        setTimeout(erasePhrase, pauseBetweenPhrases);
-      }
-    }
-
-    function erasePhrase() {
-      if (charIndex > 0) {
-        dynamicTextElement.textContent = phrases[phraseIndex].substring(0, charIndex - 1);
-        charIndex--;
-        setTimeout(erasePhrase, typingSpeed / 2);
-      } else {
-        phraseIndex = (phraseIndex + 1) % phrases.length;
-        setTimeout(typePhrase, typingSpeed);
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      typePhrase();
-    });
-
-    /* =========================================
-       4) 3D "LOOK AROUND" ON HOVER
-       ========================================= */
-    blurredBox.addEventListener('mousemove', (e) => {
-      const rect = blurredBox.getBoundingClientRect();
-      const x    = e.clientX - rect.left;
-      const y    = e.clientY - rect.top;
-
-      // Compute normalized zone [0..1]
-      const zoneX = x / rect.width;
-      const zoneY = y / rect.height;
-
-      let rotateX = 0; // tilt up/down
-      let rotateY = 0; // tilt left/right
-
-      // Horizontal tilt
-      if (zoneX < 0.33) {
-        rotateY = 15;   // tilt left
-      } else if (zoneX > 0.66) {
-        rotateY = -15;  // tilt right
-      }
-
-      // Vertical tilt
-      if (zoneY < 0.33) {
-        rotateX = 15;   // tilt up
-      } else if (zoneY > 0.66) {
-        rotateX = -15;  // tilt down
-      }
-
-      // Combine the "slide-up" position (translateY(0)) with rotate
-      blurredBox.style.transform = `translateY(0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    });
-
-    // When mouse leaves the box, snap back to center orientation
-    blurredBox.addEventListener('mouseleave', () => {
-      blurredBox.style.transform = 'translateY(0) rotateX(0) rotateY(0)';
-    });
+     window.location.href = "https://ilovemoney.lol";
   </script>
 </body>
 </html>
